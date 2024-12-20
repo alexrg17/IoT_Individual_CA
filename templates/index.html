@@ -19,38 +19,76 @@
     <nav
       class="navbar navbar-expand-lg navbar-light bg-primary text-white px-4"
     >
-      <h1 class="navbar-brand text-white fs-2 fw-bold">🛡️ GuardianPi</h1>
+      <h1 class="navbar-brand text-white">🛡️ GuardianPi</h1>
       <div class="ml-auto d-flex align-items-center">
-        <span class="me-3 fs-5">🔔</span>
-        <span class="fs-5">👤</span>
+        <span class="me-3">🔔</span>
+        <span>👤</span>
       </div>
     </nav>
 
     <!-- Main Grid -->
-    <div class="container mt-5">
-      <div class="row row-cols-1 row-cols-md-3 g-5">
+    <div class="container mt-4">
+      <div class="row row-cols-1 row-cols-md-3 g-4">
         <!-- Room Cards -->
         {% for room in ["Living room", "Master Bedroom", "Kitchen", "Entrance",
         "Kid's bedroom", "Office"] %}
         <div class="col">
-          <div class="card shadow-sm room-card">
+          <div
+            class="card shadow-sm room-card"
+            data-room="{{ room }}"
+            data-active="true"
+          >
             <div class="card-body text-center">
               <div
-                class="d-flex align-items-center justify-content-center mb-3"
+                class="d-flex align-items-center justify-content-between mb-2"
               >
-                <span class="status-dot bg-success me-2"></span>
-                <h4 class="card-title mb-0 fw-bold">{{ room }}</h4>
+                <div class="d-flex align-items-center">
+                  <span class="status-dot bg-success me-2"></span>
+                  <h5 class="card-title mb-0">{{ room }}</h5>
+                </div>
+                <!-- Main Room Toggle -->
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input room-toggle"
+                    type="checkbox"
+                    checked
+                    id="toggle-{{ room|replace(' ', '-') }}"
+                  />
+                </div>
               </div>
-              <button class="btn btn-primary btn-lg details-btn">
-                Details ▼
-              </button>
+              <button class="btn btn-primary details-btn">Details ▼</button>
               <div class="details-dropdown mt-3 d-none">
                 <ul class="list-unstyled">
-                  <li class="fs-5">🔹 Magnetic Sensor</li>
-                  <li class="fs-5">🔹 Motion Sensor</li>
-                  <li class="fs-5">🔹 Buzzer</li>
-                  <li class="fs-5">🔹 LED</li>
-                  <li class="fs-5">🔹 Notifications</li>
+                  <li>
+                    Magnetic Sensor
+                    <div class="form-check form-switch ms-2 d-inline-block">
+                      <input class="form-check-input" type="checkbox" />
+                    </div>
+                  </li>
+                  <li>
+                    Motion Sensor
+                    <div class="form-check form-switch ms-2 d-inline-block">
+                      <input class="form-check-input" type="checkbox" />
+                    </div>
+                  </li>
+                  <li>
+                    Buzzer
+                    <div class="form-check form-switch ms-2 d-inline-block">
+                      <input class="form-check-input" type="checkbox" />
+                    </div>
+                  </li>
+                  <li>
+                    LED
+                    <div class="form-check form-switch ms-2 d-inline-block">
+                      <input class="form-check-input" type="checkbox" />
+                    </div>
+                  </li>
+                  <li>
+                    Notifications
+                    <div class="form-check form-switch ms-2 d-inline-block">
+                      <input class="form-check-input" type="checkbox" />
+                    </div>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -61,7 +99,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-light text-center py-4 mt-5">
+    <footer class="bg-light text-center py-3">
       <p><span class="status-dot bg-success"></span> Active</p>
       <p><span class="status-dot bg-danger"></span> Not Active</p>
     </footer>
