@@ -1,5 +1,6 @@
-from flask import Flask, render_template
-from models.sensor_data import db
+from flask import Flask, render_template, session, redirect, url_for
+from database.init_db import db, init_db
+from controllers.login_controller import login_blueprint
 import config
 
 # Initialize Flask app
@@ -7,12 +8,19 @@ app = Flask(__name__)
 app.config.from_object(config)
 
 # Initialize the database
-db.init_app(app)
+init_db(app)
 
-# Route for the home page
+# Register blueprints
+app.register_blueprint(login_blueprint)
+
+# Home Route
 @app.route('/')
 def home():
-    return render_template('index.html')  # Render the main design page
+    # Check if user is logged in
+    if 'user_id' in session:
+        return render_template('index.html')  # Render your index page
+    return redirect(url_for('login.login'))  # Redirect to login if not logged in
+
 
 if __name__ == "__main__":
-    app.run(debug=True)  # Run the Flask development server
+    app.run(debug=True)
