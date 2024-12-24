@@ -26,16 +26,25 @@
       </div>
     </nav>
 
-    <!-- Main Grid -->
+    <!-- Main Content -->
     <div class="container mt-4">
+      <div class="d-flex justify-content-end mb-3">
+        <!-- Add New Room Button -->
+        <button
+          class="btn btn-success"
+          data-bs-toggle="modal"
+          data-bs-target="#addRoomModal"
+        >
+          + Add New Room
+        </button>
+      </div>
       <div class="row row-cols-1 row-cols-md-3 g-4">
-        <!-- Room Cards -->
-        {% for room in ["Living room", "Master Bedroom", "Kitchen", "Entrance",
-        "Kid's bedroom", "Office"] %}
+        <!-- Dynamic Room Cards -->
+        {% for room in rooms %}
         <div class="col">
           <div
             class="card shadow-sm room-card"
-            data-room="{{ room }}"
+            data-room="{{ room.name }}"
             data-active="true"
           >
             <div class="card-body text-center">
@@ -44,7 +53,7 @@
               >
                 <div class="d-flex align-items-center">
                   <span class="status-dot bg-success me-2"></span>
-                  <h5 class="card-title mb-0">{{ room }}</h5>
+                  <h5 class="card-title mb-0">{{ room.name }}</h5>
                 </div>
                 <!-- Main Room Toggle -->
                 <div class="form-check form-switch">
@@ -52,10 +61,11 @@
                     class="form-check-input room-toggle"
                     type="checkbox"
                     checked
-                    id="toggle-{{ room|replace(' ', '-') }}"
+                    id="toggle-{{ room.name|replace(' ', '-') }}"
                   />
                 </div>
               </div>
+              <!-- Dropdown Details Button -->
               <button class="btn btn-primary details-btn">Details ▼</button>
               <div class="details-dropdown mt-3 d-none">
                 <ul class="list-unstyled">
@@ -95,6 +105,53 @@
           </div>
         </div>
         {% endfor %}
+      </div>
+    </div>
+
+    <!-- Add Room Modal -->
+    <div
+      class="modal fade"
+      id="addRoomModal"
+      tabindex="-1"
+      aria-labelledby="addRoomModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addRoomModalLabel">Add New Room</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <form action="/add-room" method="POST">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="roomName" class="form-label">Room Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="roomName"
+                  name="room_name"
+                  required
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary">Add Room</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
 
