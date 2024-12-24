@@ -22,10 +22,24 @@
       <h1 class="navbar-brand text-white">🛡️ GuardianPi</h1>
       <div class="ml-auto d-flex align-items-center">
         <span class="me-3">🔔</span>
-        <span>👤</span>
-        <a href="{{ url_for('login.logout') }}" class="btn btn-danger ms-3"
-          >Logout</a
-        >
+        <!-- Profile Dropdown -->
+        <div class="dropdown">
+          <button
+            class="btn btn-light dropdown-toggle"
+            type="button"
+            id="profileDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            👤
+          </button>
+          <ul
+            class="dropdown-menu dropdown-menu-end"
+            aria-labelledby="profileDropdown"
+          >
+            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+          </ul>
+        </div>
       </div>
     </nav>
 
