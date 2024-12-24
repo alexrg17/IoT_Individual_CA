@@ -19,7 +19,7 @@ def login():
             session['user_id'] = user.id
             session['username'] = user.username
             flash('Login successful!', 'success')
-            return redirect(url_for('home'))
+            return redirect(url_for('main.home'))  # Redirect to the main.home endpoint
 
         flash('Invalid username or password.', 'danger')
 
