@@ -18,8 +18,13 @@ def login():
             # Login successful
             session['user_id'] = user.id
             session['username'] = user.username
+            session['role'] = user.role  # Store the user's role in the session
             flash('Login successful!', 'success')
-            return redirect(url_for('main.home'))  # Redirect to the main.home endpoint
+
+            # Redirect based on role
+            if user.role == 'admin':
+                return redirect(url_for('admin.manage_users'))  # Redirect admin to the admin dashboard
+            return redirect(url_for('main.home'))  # Redirect normal users to the home page
 
         flash('Invalid username or password.', 'danger')
 
