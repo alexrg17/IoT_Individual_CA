@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from models.user import User
-from database.init_db import db
+from repositories.login import UserRepository
 
 admin_blueprint = Blueprint('admin', __name__)
 
@@ -11,8 +10,8 @@ def manage_users():
         flash('Access denied. Admins only.', 'danger')
         return redirect(url_for('main.home'))  # Redirect to home if not admin
 
-    # Fetch all users from the database
-    users = User.query.all()
+    # Fetch all users from the repository
+    users = UserRepository.get_all_users()
     return render_template('admin_users.html', users=users)
 
 @admin_blueprint.route('/users/edit/<int:user_id>', methods=['GET', 'POST'])
@@ -22,23 +21,24 @@ def edit_user(user_id):
         flash('Access denied. Admins only.', 'danger')
         return redirect(url_for('main.home'))  # Redirect to home if not admin
 
-    user = User.query.get(user_id)
+    user = UserRepository.get_user_by_id(user_id)
     if not user:
         flash('User not found.', 'danger')
         return redirect(url_for('admin.manage_users'))
 
     if request.method == 'POST':
         # Update user details from the form
-        user.name = request.form.get('name')
-        user.email = request.form.get('email')
-        user.username = request.form.get('username')
-        user.role = request.form.get('role')
+        user_data = {
+            'name': request.form.get('name'),
+            'email': request.form.get('email'),
+            'username': request.form.get('username'),
+            'role': request.form.get('role')
+        }
 
         try:
-            db.session.commit()
+            UserRepository.update_user(user, user_data)
             flash('User updated successfully!', 'success')
         except Exception as e:
-            db.session.rollback()
             flash(f'An error occurred: {e}', 'danger')
 
         return redirect(url_for('admin.manage_users'))
@@ -53,17 +53,10 @@ def delete_user(user_id):
         flash('Access denied. Admins only.', 'danger')
         return redirect(url_for('main.home'))
 
-    user = User.query.get(user_id)
-    if not user:
-        flash('User not found.', 'danger')
-        return redirect(url_for('admin.manage_users'))
-
     try:
-        db.session.delete(user)
-        db.session.commit()
+        UserRepository.delete_user(user_id)
         flash('User deleted successfully.', 'success')
     except Exception as e:
-        db.session.rollback()
         flash(f'An error occurred: {e}', 'danger')
 
     return redirect(url_for('admin.manage_users'))
