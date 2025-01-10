@@ -8,14 +8,21 @@ import config
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 import os
+from cryptography.fernet import Fernet
+from flask_jwt_extended import JWTManager
 
 # Initialize Flask app
 app = Flask(__name__)
 app.config.from_object(config)
 
 load_dotenv()
+encryption_key = Fernet.generate_key()
 # Flask Configuration
 app.config['SECRET_KEY'] = os.getenv("FLASK_SECRET_KEY")
+
+app.config["JWT_SECRET_KEY"]=os.getenv("JWT_KEY")
+
+jwt = JWTManager(app)
 
 # Database Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:@localhost/iot_project'
