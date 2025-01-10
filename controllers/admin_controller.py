@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from repositories.login import UserRepository
+from controllers.protected_routes.protected_route import adminrole
 
 admin_blueprint = Blueprint('admin', __name__)
 
@@ -15,6 +16,7 @@ def manage_users():
     return render_template('admin_users.html', users=users)
 
 @admin_blueprint.route('/users/edit/<int:user_id>', methods=['GET', 'POST'])
+@adminrole
 def edit_user(user_id):
     # Check if the logged-in user is an admin
     if 'user_id' not in session or session.get('role') != 'admin':
@@ -47,6 +49,7 @@ def edit_user(user_id):
     return render_template('admin_edit_user.html', user=user)
 
 @admin_blueprint.route('/users/delete/<int:user_id>', methods=['POST'])
+@adminrole
 def delete_user(user_id):
     # Check if the logged-in user is an admin
     if 'user_id' not in session or session.get('role') != 'admin':

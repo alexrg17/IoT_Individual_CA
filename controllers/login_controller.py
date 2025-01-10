@@ -41,8 +41,8 @@ def login():
             session['username'] = user.username
             session['role'] = user.role  # Store the user's role in the session
 
-            # Set encrypted JWT in cookie and redirect
-            response = redirect(url_for('main.home'))
+            # Set encrypted JWT in cookie and redirect based on role
+            response = redirect(url_for('main.home') if user.role == 'user' else url_for('admin.manage_users'))
             response.set_cookie('jwttoken', encrypted_jwt.decode(), httponly=True)
             return response
 
