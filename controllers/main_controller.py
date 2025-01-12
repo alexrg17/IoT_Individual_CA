@@ -15,7 +15,7 @@ def home():
     return render_template('index.html', rooms=rooms)
 
 @main_blueprint.route('/add-room', methods=['POST'])
-@normaluser
+
 def add_room():
     if 'user_id' not in session:
         return redirect(url_for('login.login'))
@@ -39,7 +39,7 @@ def add_room():
     return redirect(url_for('main.home'))
 
 @main_blueprint.route('/edit-room/<int:room_id>', methods=['POST'])
-@normaluser
+
 def edit_room(room_id):
     if 'user_id' not in session:
         return redirect(url_for('login.login'))
@@ -65,7 +65,7 @@ def edit_room(room_id):
     return redirect(url_for('main.home'))
 
 @main_blueprint.route('/delete-room/<int:room_id>', methods=['POST'])
-@normaluser
+
 def delete_room(room_id):
     if 'user_id' not in session:
         return redirect(url_for('login.login'))
