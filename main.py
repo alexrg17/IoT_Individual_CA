@@ -1,8 +1,19 @@
+from cryptography.fernet import Fernet
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
 from pubnub.callbacks import SubscribeCallback
 import time
 import random
+import os
+import base64
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get the encryption key from environment variable
+cipher_key = os.getenv("CIPHER_KEY")
+cipher = Fernet(cipher_key)
 
 # PubNub Configuration
 pnconfig = PNConfiguration()
@@ -65,8 +76,17 @@ class CommandCallback(SubscribeCallback):
 def publish_mock_data():
     while True:
         data = simulate_sensors()
-        pubnub.publish().channel("iot-home-security").message(data).pn_async(publish_callback)
-        print(f"Published: {data}")
+        
+        # Encrypt the message data before publishing
+        encrypted_data = cipher.encrypt(str(data).encode())
+        
+        # Convert encrypted data to base64 (JSON serializable)
+        encrypted_base64_data = base64.b64encode(encrypted_data).decode()
+        
+        # Publish encrypted data to PubNub
+        pubnub.publish().channel("iot-home-security").message(encrypted_base64_data).pn_async(publish_callback)
+        print(f"Published Encrypted Data: {encrypted_base64_data}")
+        
         time.sleep(5)
 
 if __name__ == "__main__":
