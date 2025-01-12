@@ -1,8 +1,6 @@
-// Wait for the DOM to load
 document.addEventListener("DOMContentLoaded", function () {
   // Log to confirm script is loaded
   console.log("PubNub script loaded successfully");
-  console.log("PubNub object:", PubNub);
 
   // Initialize PubNub
   const pubnub = new PubNub({
@@ -10,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     subscribeKey: "sub-c-152b2f8c-6bde-462a-b24b-acbcf550a503",
     uuid: "website-client",
     ssl: true,
+    cipher: "1OGZnDanEaRiuMYXZpHU7G448cnJ1onrFL_pitQgaI8=", // Using cipher key
   });
 
   // Subscribe to the "iot-home-security" channel
@@ -43,10 +42,14 @@ document.addEventListener("DOMContentLoaded", function () {
       timestamp: new Date().toISOString(),
     };
 
+    // Encrypt the commandMessage using the CIPHER_KEY
+    const encryptedMessage = encryptMessage(commandMessage);
+
+    // Publish encrypted message to the same channel
     pubnub.publish(
       {
-        channel: "iot-home-security", // Publish commands to the same channel
-        message: commandMessage,
+        channel: "iot-home-security",
+        message: { data: encryptedMessage }, // Send encrypted data
       },
       function (status, response) {
         if (status.error) {
@@ -56,6 +59,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
     );
+  }
+
+  // Function to encrypt message using the provided CIPHER_KEY
+  function encryptMessage(message) {
+    const messageString = JSON.stringify(message); // Convert message to string
+    const encryptedMessage = CryptoJS.AES.encrypt(
+      messageString,
+      "1OGZnDanEaRiuMYXZpHU7G448cnJ1onrFL_pitQgaI8="
+    ).toString();
+    console.log("Encrypted message:", encryptedMessage);
+    return encryptedMessage;
   }
 
   // Attach event listeners to toggles
@@ -86,13 +100,13 @@ document.addEventListener("DOMContentLoaded", function () {
       newLog.style.backgroundColor = "#f9f9f9";
 
       newLog.innerHTML = `
-        <strong>Timestamp:</strong> ${data.timestamp} <br>
-        <strong>Device:</strong> ${data.device} <br>
-        <strong>Window Status:</strong> ${data.window_status} <br>
-        <strong>Motion Detected:</strong> ${data.motion_detected} <br>
-        <strong>RGB LED:</strong> ${data.rgb_led} <br>
-        <strong>Buzzer:</strong> ${data.buzzer}
-      `;
+          <strong>Timestamp:</strong> ${data.timestamp} <br>
+          <strong>Device:</strong> ${data.device} <br>
+          <strong>Window Status:</strong> ${data.window_status} <br>
+          <strong>Motion Detected:</strong> ${data.motion_detected} <br>
+          <strong>RGB LED:</strong> ${data.rgb_led} <br>
+          <strong>Buzzer:</strong> ${data.buzzer}
+        `;
 
       logContainer.prepend(newLog);
     }
